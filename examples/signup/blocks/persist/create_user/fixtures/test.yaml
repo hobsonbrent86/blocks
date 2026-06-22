@@ -1,0 +1,12 @@
+cases:
+  - name: creates user record
+    in:
+      user:
+        email: store@example.com
+        name: Store User
+        password: password123
+        normalizedEmail: store@example.com
+    out:
+      record:
+        email: store@example.com
+        name: Store User

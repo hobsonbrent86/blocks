@@ -1,0 +1,12 @@
+{
+  "name": "@blocks/schemas",
+  "version": "0.1.0",
+  "description": "JSON Schema definitions for Block Vibe Coding contracts and graphs",
+  "type": "module",
+  "license": "Apache-2.0",
+  "exports": {
+    "./contract.schema.json": "./contract.schema.json",
+    "./graph.schema.json": "./graph.schema.json"
+  },
+  "files": ["*.json"]
+}

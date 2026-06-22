@@ -1,0 +1,26 @@
+id: ingress.signup_webhook
+species: ingress
+version: 1.0.0
+description: Accept signup webhook payload
+core:
+  verb: accept
+  description: Accept incoming signup webhook payload
+inputs: {}
+outputs:
+  payload:
+    type: SignupPayload
+    description: Raw signup request body
+failure_modes:
+  invalid_body:
+    retry: terminal
+    description: Request body is not parseable JSON
+idempotency: pure
+effects:
+  - read
+layers:
+  validation:
+    status: implemented
+  security:
+    status: implemented
+  observability:
+    status: implemented

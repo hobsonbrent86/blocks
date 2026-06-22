@@ -1,0 +1,12 @@
+{
+  "name": "@blocks/example-signup",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "verify": "blocks verify --path ."
+  },
+  "devDependencies": {
+    "blocks-cli": "workspace:*"
+  }
+}

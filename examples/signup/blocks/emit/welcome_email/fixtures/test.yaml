@@ -1,0 +1,12 @@
+cases:
+  - name: sends welcome notification
+    in:
+      recipient:
+        id: user-123
+        email: welcome@example.com
+        name: Welcome User
+    out:
+      sent:
+        email: welcome@example.com
+        name: Welcome User
+        userId: user-123

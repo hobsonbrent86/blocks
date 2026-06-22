@@ -1,0 +1,27 @@
+cases:
+  - name: valid signup payload
+    in:
+      payload:
+        email: user@example.com
+        name: Jane Doe
+        password: password123
+    out:
+      validated:
+        email: user@example.com
+        name: Jane Doe
+        password: password123
+        normalizedEmail: user@example.com
+  - name: invalid email
+    in:
+      payload:
+        email: not-an-email
+        name: Jane Doe
+        password: password123
+    throws: invalid_email
+  - name: weak password
+    in:
+      payload:
+        email: user@example.com
+        name: Jane Doe
+        password: short
+    throws: weak_password

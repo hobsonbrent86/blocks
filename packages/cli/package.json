@@ -1,0 +1,38 @@
+{
+  "name": "blocks-cli",
+  "version": "0.1.0",
+  "description": "CLI for Block Vibe Coding — verify, test, and inspect composable blocks",
+  "type": "module",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/blocks-dev/blocks.git",
+    "directory": "packages/cli"
+  },
+  "keywords": ["blocks", "vibe-coding", "cursor", "ai", "architecture"],
+  "bin": {
+    "blocks": "./dist/index.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": ["dist", "assets"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json && node scripts/copy-assets.mjs",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@blocks/inspect": "workspace:*",
+    "@blocks/mcp": "workspace:*",
+    "@blocks/verify": "workspace:*",
+    "commander": "^13.1.0",
+    "yaml": "^2.7.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.10",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.2"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

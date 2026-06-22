@@ -1,0 +1,30 @@
+id: validate.signup_payload
+species: validate
+version: 1.0.0
+description: Validate and normalize signup payload
+core:
+  verb: assert
+  description: Assert signup payload matches schema and business rules
+inputs:
+  payload:
+    type: SignupPayload
+outputs:
+  validated:
+    type: ValidatedSignup
+failure_modes:
+  invalid_email:
+    retry: terminal
+    description: Email format is invalid
+  weak_password:
+    retry: terminal
+    description: Password does not meet policy
+idempotency: pure
+effects:
+  - read
+layers:
+  validation:
+    status: implemented
+  security:
+    status: implemented
+  observability:
+    status: implemented

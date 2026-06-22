@@ -1,0 +1,29 @@
+cases:
+  - name: webhook to welcome email
+    chain:
+      - block: ingress.signup_webhook
+        in:
+          _raw:
+            email: e2e@example.com
+            name: E2E User
+            password: password123
+        save: payload
+      - block: validate.signup_payload
+        in:
+          payload: $payload
+        save: validated
+      - block: gate.email_not_taken
+        in:
+          candidate: $validated
+        save: approved
+      - block: persist.create_user
+        in:
+          user: $approved
+        save: record
+      - block: emit.welcome_email
+        in:
+          recipient: $record
+        out:
+          sent:
+            email: e2e@example.com
+            name: E2E User

@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://blocks.dev/schemas/graph.schema.json",
+  "title": "Block Graph",
+  "type": "object",
+  "required": ["id", "version", "blocks", "edges"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^feature\\.[a-z][a-z0-9_]*$"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "description": { "type": "string" },
+    "blocks": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^(ingress|transform|validate|persist|emit|gate|query)\\.[a-z][a-z0-9_]*$"
+      }
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^(ingress|transform|validate|persist|emit|gate|query)\\.[a-z][a-z0-9_]*$"
+      }
+    },
+    "exits": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^(ingress|transform|validate|persist|emit|gate|query)\\.[a-z][a-z0-9_]*$"
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/edge" }
+    },
+    "heresy": {
+      "type": "object",
+      "required": ["type", "rationale"],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["mega-block", "skip-layer", "inline-edge"]
+        },
+        "rationale": { "type": "string", "minLength": 1 },
+        "explode_by": { "type": "string" }
+      }
+    }
+  },
+  "$defs": {
+    "edge": {
+      "type": "object",
+      "required": ["from", "to"],
+      "additionalProperties": false,
+      "properties": {
+        "from": {
+          "type": "string",
+          "pattern": "^(ingress|transform|validate|persist|emit|gate|query)\\.[a-z][a-z0-9_]*\\.(inputs|outputs)\\.[a-z][a-z0-9_]*$"
+        },
+        "to": {
+          "type": "string",
+          "pattern": "^(ingress|transform|validate|persist|emit|gate|query)\\.[a-z][a-z0-9_]*\\.(inputs|outputs)\\.[a-z][a-z0-9_]*$"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,28 @@
+id: emit.welcome_email
+species: emit
+version: 1.0.0
+description: Send welcome email to new user
+core:
+  verb: notify
+  description: Notify user with welcome email
+inputs:
+  recipient:
+    type: UserRecord
+outputs:
+  sent:
+    type: WelcomeRecipient
+failure_modes:
+  send_failed:
+    retry: retryable
+    description: Email provider failed
+idempotency: dangerous
+effects:
+  - external_call
+layers:
+  validation:
+    status: implemented
+  security:
+    status: na
+    rationale: Email content uses already-validated user record only
+  observability:
+    status: implemented

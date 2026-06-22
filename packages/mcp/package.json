@@ -1,0 +1,23 @@
+{
+  "name": "@blocks/mcp",
+  "version": "0.1.0",
+  "description": "Local MCP server for Block Vibe Coding",
+  "type": "module",
+  "license": "Apache-2.0",
+  "bin": {
+    "blocks-mcp": "./dist/index.js"
+  },
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@blocks/verify": "workspace:*",
+    "@modelcontextprotocol/sdk": "^1.12.1",
+    "yaml": "^2.7.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.10",
+    "typescript": "^5.8.2"
+  }
+}

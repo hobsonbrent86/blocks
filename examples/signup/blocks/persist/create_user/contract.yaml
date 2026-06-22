@@ -1,0 +1,27 @@
+id: persist.create_user
+species: persist
+version: 1.0.0
+description: Create user record from validated signup
+core:
+  verb: store
+  description: Store new user record in database
+inputs:
+  user:
+    type: ValidatedSignup
+outputs:
+  record:
+    type: UserRecord
+failure_modes:
+  store_failed:
+    retry: retryable
+    description: Database write failed
+idempotency: idempotent_write
+effects:
+  - write
+layers:
+  validation:
+    status: implemented
+  security:
+    status: implemented
+  observability:
+    status: implemented

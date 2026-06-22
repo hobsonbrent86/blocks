@@ -1,0 +1,27 @@
+id: gate.email_not_taken
+species: gate
+version: 1.0.0
+description: Reject signup when email already exists
+core:
+  verb: decide
+  description: Decide whether signup email is available
+inputs:
+  candidate:
+    type: ValidatedSignup
+outputs:
+  approved:
+    type: ValidatedSignup
+failure_modes:
+  email_taken:
+    retry: terminal
+    description: Email is already registered
+idempotency: pure
+effects:
+  - read
+layers:
+  validation:
+    status: implemented
+  security:
+    status: implemented
+  observability:
+    status: implemented

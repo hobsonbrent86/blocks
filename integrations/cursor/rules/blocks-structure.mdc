@@ -1,0 +1,28 @@
+---
+description: Block file layout and import boundaries
+globs:
+  - blocks/**/*
+alwaysApply: true
+---
+
+# Block structure
+
+```
+blocks/<species>/<name>/
+  contract.yaml
+  core.ts
+  layers/
+    validation.ts
+    security.ts
+    observability.ts
+  fixtures/
+    test.yaml
+```
+
+- **species**: ingress, transform, validate, persist, emit, gate, query
+- **Shared types** live in `shared/` — never import another block's core
+- **Graph edges** live in `.blocks/graph.yaml` or `.blocks/graphs/<id>.yaml`
+- **Full feature plan** — list all planned block ids in the graph YAML even before they are built; Studio and MCP read this file
+- Block id must match path: `<species>.<name>`
+
+When editing, load only the current block's contract and files.

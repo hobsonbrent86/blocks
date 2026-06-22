@@ -1,0 +1,90 @@
+name: Blocks Verify
+description: Verify Block Vibe Coding projects against the creed
+
+inputs:
+  path:
+    description: Repository root to verify
+    required: false
+    default: "."
+  strict:
+    description: Enable P2 hygiene checks
+    required: false
+    default: "false"
+  graph:
+    description: Graph id to verify (optional)
+    required: false
+    default: ""
+  run-tests:
+    description: Run block fixture tests after verify
+    required: false
+    default: "true"
+  cli-bin:
+    description: Path to blocks CLI dist/index.js (for monorepos; skips npm install)
+    required: false
+    default: ""
+  cli-version:
+    description: npm version of blocks-cli when cli-bin is not set
+    required: false
+    default: "latest"
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: "20"
+
+    - name: Resolve blocks CLI
+      id: cli
+      shell: bash
+      env:
+        INPUT_CLI_BIN: ${{ inputs.cli-bin }}
+        INPUT_CLI_VERSION: ${{ inputs.cli-version }}
+      run: |
+        set -euo pipefail
+        if [ -n "$INPUT_CLI_BIN" ]; then
+          echo "cmd=node" >> "$GITHUB_OUTPUT"
+          echo "args=$GITHUB_WORKSPACE/$INPUT_CLI_BIN" >> "$GITHUB_OUTPUT"
+        else
+          npm install -g "blocks-cli@${INPUT_CLI_VERSION}"
+          echo "cmd=blocks" >> "$GITHUB_OUTPUT"
+          echo "args=" >> "$GITHUB_OUTPUT"
+        fi
+
+    - name: Blocks verify
+      shell: bash
+      env:
+        CLI_CMD: ${{ steps.cli.outputs.cmd }}
+        CLI_ARGS: ${{ steps.cli.outputs.args }}
+        INPUT_PATH: ${{ inputs.path }}
+        INPUT_STRICT: ${{ inputs.strict }}
+        INPUT_GRAPH: ${{ inputs.graph }}
+      run: |
+        set -euo pipefail
+        run_blocks() {
+          if [ "$CLI_CMD" = "node" ]; then
+            node "$CLI_ARGS" "$@"
+          else
+            blocks "$@"
+          fi
+        }
+        ARGS=(verify --path "$INPUT_PATH" --format github)
+        if [ "$INPUT_STRICT" = "true" ]; then ARGS+=(--strict); fi
+        if [ -n "$INPUT_GRAPH" ]; then ARGS+=(--graph "$INPUT_GRAPH"); fi
+        run_blocks "${ARGS[@]}"
+
+    - name: Blocks test
+      if: inputs.run-tests == 'true'
+      shell: bash
+      env:
+        CLI_CMD: ${{ steps.cli.outputs.cmd }}
+        CLI_ARGS: ${{ steps.cli.outputs.args }}
+        INPUT_PATH: ${{ inputs.path }}
+      run: |
+        set -euo pipefail
+        if [ "$CLI_CMD" = "node" ]; then
+          node "$CLI_ARGS" test --path "$INPUT_PATH"
+        else
+          blocks test --path "$INPUT_PATH"
+        fi

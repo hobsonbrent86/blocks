@@ -1,0 +1,146 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://blocks.dev/schemas/contract.schema.json",
+  "title": "Block Contract",
+  "type": "object",
+  "required": [
+    "id",
+    "species",
+    "version",
+    "core",
+    "inputs",
+    "outputs",
+    "failure_modes",
+    "idempotency",
+    "effects",
+    "layers"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^(ingress|transform|validate|persist|emit|gate|query)\\.[a-z][a-z0-9_]*$"
+    },
+    "species": {
+      "type": "string",
+      "enum": ["ingress", "transform", "validate", "persist", "emit", "gate", "query"]
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "description": { "type": "string", "minLength": 1 },
+    "core": {
+      "type": "object",
+      "required": ["verb", "description"],
+      "additionalProperties": false,
+      "properties": {
+        "verb": { "type": "string", "minLength": 1 },
+        "description": { "type": "string", "minLength": 1 }
+      }
+    },
+    "inputs": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/port" }
+    },
+    "outputs": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/port" }
+    },
+    "failure_modes": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": { "$ref": "#/$defs/failure_mode" }
+    },
+    "idempotency": {
+      "type": "string",
+      "enum": ["pure", "idempotent_write", "append_only", "dangerous"]
+    },
+    "effects": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": ["read", "write", "external_call", "human_gate"]
+      }
+    },
+    "human_setup": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/human_setup_item" }
+    },
+    "layers": {
+      "type": "object",
+      "required": ["validation", "security", "observability"],
+      "properties": {
+        "validation": { "$ref": "#/$defs/layer" },
+        "security": { "$ref": "#/$defs/layer" },
+        "observability": { "$ref": "#/$defs/layer" },
+        "resilience": { "$ref": "#/$defs/layer" }
+      },
+      "additionalProperties": { "$ref": "#/$defs/layer" }
+    },
+    "heresy": { "$ref": "#/$defs/heresy" }
+  },
+  "$defs": {
+    "port": {
+      "type": "object",
+      "required": ["type"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "type": "string", "minLength": 1 },
+        "description": { "type": "string" }
+      }
+    },
+    "failure_mode": {
+      "type": "object",
+      "required": ["retry"],
+      "additionalProperties": false,
+      "properties": {
+        "retry": {
+          "type": "string",
+          "enum": ["none", "retryable", "terminal"]
+        },
+        "description": { "type": "string" }
+      }
+    },
+    "layer": {
+      "type": "object",
+      "required": ["status"],
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["implemented", "inherited", "na"]
+        },
+        "rationale": { "type": "string" },
+        "inherits_from": { "type": "string" }
+      }
+    },
+    "heresy": {
+      "type": "object",
+      "required": ["type", "rationale"],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["mega-block", "skip-layer", "inline-edge"]
+        },
+        "rationale": { "type": "string", "minLength": 1 },
+        "explode_by": { "type": "string" }
+      }
+    },
+    "human_setup_item": {
+      "type": "object",
+      "required": ["id", "description"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "description": { "type": "string", "minLength": 1 },
+        "env": { "type": "string", "minLength": 1 },
+        "command": { "type": "string", "minLength": 1 }
+      },
+      "anyOf": [{ "required": ["env"] }, { "required": ["command"] }]
+    }
+  }
+}

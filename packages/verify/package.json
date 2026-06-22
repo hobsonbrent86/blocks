@@ -1,0 +1,33 @@
+{
+  "name": "@blocks/verify",
+  "version": "0.1.0",
+  "description": "Verification engine for Block Vibe Coding",
+  "type": "module",
+  "license": "Apache-2.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@blocks/schemas": "workspace:*",
+    "ajv": "^8.17.1",
+    "glob": "^11.0.1",
+    "tsx": "^4.19.3",
+    "yaml": "^2.7.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.10",
+    "typescript": "^5.8.2",
+    "vitest": "^3.0.8"
+  }
+}

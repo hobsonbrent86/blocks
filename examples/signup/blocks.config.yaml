@@ -1,0 +1,8 @@
+version: 1
+language: typescript
+paths:
+  blocks: blocks
+  graphs: .blocks/graphs
+  shared: shared
+verify:
+  strict: false

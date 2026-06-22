@@ -1,0 +1,14 @@
+cases:
+  - name: email available
+    in:
+      candidate:
+        email: fresh@example.com
+        name: Fresh User
+        password: password123
+        normalizedEmail: fresh@example.com
+    out:
+      approved:
+        email: fresh@example.com
+        name: Fresh User
+        password: password123
+        normalizedEmail: fresh@example.com

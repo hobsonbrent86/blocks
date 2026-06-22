@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Block Inspector</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --text: #e8eaed;
+      --muted: #9aa0a6;
+      --pass: #34a853;
+      --fail: #ea4335;
+      --skip: #5f6368;
+      --na: #3c4043;
+      --border: #2d3142;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .card {
+      max-width: 480px;
+      margin: 0 auto;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .header {
+      padding: 20px 20px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .header h1 {
+      margin: 0 0 4px;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+    .header p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.875rem;
+    }
+    .status-banner {
+      padding: 10px 20px;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    .status-banner.pass { background: rgba(52, 168, 83, 0.15); color: var(--pass); }
+    .status-banner.warn { background: rgba(154, 160, 166, 0.15); color: var(--muted); }
+    .steps { padding: 8px 0; }
+    .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 10px 20px;
+    }
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-top: 5px;
+      flex-shrink: 0;
+    }
+    .dot.pass { background: var(--pass); }
+    .dot.fail { background: var(--fail); }
+    .dot.skip { background: var(--skip); }
+    .dot.na { background: transparent; border: 2px solid var(--muted); }
+    .step-label { font-weight: 500; font-size: 0.9rem; }
+    .step-msg { color: var(--muted); font-size: 0.8rem; margin-top: 2px; }
+    .detail-section {
+      padding: 12px 20px 16px;
+      border-top: 1px solid var(--border);
+    }
+    .detail-section h3 {
+      margin: 0 0 8px;
+      font-size: 0.68rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+    }
+    .detail-purpose {
+      margin: 0;
+      font-size: 0.84rem;
+      line-height: 1.45;
+    }
+    .detail-elements {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .detail-elements li {
+      padding: 7px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.8rem;
+    }
+    .detail-elements li:last-child { border-bottom: none; }
+    .detail-elements code {
+      font-size: 0.78rem;
+      color: #8ab4f8;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+    .el-detail {
+      color: var(--muted);
+      font-size: 0.75rem;
+      margin-top: 3px;
+      line-height: 1.35;
+    }
+    .footer {
+      padding: 16px 20px;
+      border-top: 1px solid var(--border);
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+    button:hover { border-color: var(--muted); }
+    .meta { text-align: center; color: var(--muted); font-size: 0.75rem; margin-top: 16px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="header">
+      <h1 id="block-id">Loading…</h1>
+      <p id="block-desc"></p>
+    </div>
+    <div id="banner" class="status-banner">Checking…</div>
+    <div id="steps" class="steps"></div>
+    <div id="guide"></div>
+    <div class="footer">
+      <button type="button" id="refresh">Refresh</button>
+    </div>
+  </div>
+  <p class="meta">Block Inspector · Block Vibe Coding</p>
+  <script>
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function renderBlockGuide(guide) {
+      const guideEl = document.getElementById('guide');
+      guideEl.innerHTML = '';
+      if (!guide) return;
+      const elementsHtml = (guide.elements || []).map(function(el) {
+        return '<li><code>' + escapeHtml(el.label) + '</code>' +
+          (el.detail ? '<div class="el-detail">' + escapeHtml(el.detail) + '</div>' : '') +
+          '</li>';
+      }).join('');
+      guideEl.innerHTML =
+        '<div class="detail-section">' +
+        '<h3>Purpose</h3>' +
+        '<p class="detail-purpose">' + escapeHtml(guide.purpose) + '</p>' +
+        '</div>' +
+        '<div class="detail-section">' +
+        '<h3>Important elements</h3>' +
+        '<ul class="detail-elements">' + elementsHtml + '</ul>' +
+        '</div>';
+    }
+
+    async function load() {
+      const res = await fetch('/api/report');
+      const report = await res.json();
+      document.getElementById('block-id').textContent = report.block || report.graph || 'Repository';
+      document.getElementById('block-desc').textContent =
+        report.guide?.purpose ||
+        report.steps.find(s => s.id === 'contract')?.message ||
+        '';
+      const coreStep = report.steps.find(s => s.id === 'core');
+      const banner = document.getElementById('banner');
+      let bannerText = 'Needs fixes';
+      let bannerClass = 'fail';
+      if (report.ok) {
+        bannerText = 'Working';
+        bannerClass = 'pass';
+      } else if (coreStep && coreStep.status === 'pass') {
+        bannerText = 'Structure OK';
+        bannerClass = 'warn';
+      }
+      banner.textContent = bannerText;
+      banner.className = 'status-banner ' + bannerClass;
+      const stepsEl = document.getElementById('steps');
+      stepsEl.innerHTML = '';
+      for (const step of report.steps) {
+        if (step.id === 'contract' && report.block) continue;
+        const row = document.createElement('div');
+        row.className = 'step';
+        row.innerHTML =
+          '<div class="dot ' + step.status + '"></div>' +
+          '<div><div class="step-label">' + step.label + '</div>' +
+          (step.message ? '<div class="step-msg">' + step.message + '</div>' : '') +
+          '</div>';
+        stepsEl.appendChild(row);
+      }
+      renderBlockGuide(report.guide);
+    }
+    document.getElementById('refresh').addEventListener('click', load);
+    load();
+    setInterval(load, 5000);
+  </script>
+</body>
+</html>

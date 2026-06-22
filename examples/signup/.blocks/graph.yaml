@@ -1,0 +1,22 @@
+id: feature.signup
+version: 1.0.0
+description: User signup flow from webhook to welcome email
+blocks:
+  - ingress.signup_webhook
+  - validate.signup_payload
+  - gate.email_not_taken
+  - persist.create_user
+  - emit.welcome_email
+entries:
+  - ingress.signup_webhook
+exits:
+  - emit.welcome_email
+edges:
+  - from: ingress.signup_webhook.outputs.payload
+    to: validate.signup_payload.inputs.payload
+  - from: validate.signup_payload.outputs.validated
+    to: gate.email_not_taken.inputs.candidate
+  - from: gate.email_not_taken.outputs.approved
+    to: persist.create_user.inputs.user
+  - from: persist.create_user.outputs.record
+    to: emit.welcome_email.inputs.recipient

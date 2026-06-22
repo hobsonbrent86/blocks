@@ -1,0 +1,19 @@
+cases:
+  - name: valid webhook body
+    in:
+      _raw:
+        email: user@example.com
+        name: Jane Doe
+        password: password123
+    out:
+      payload:
+        email: user@example.com
+        name: Jane Doe
+        password: password123
+  - name: invalid body
+    in:
+      _raw:
+        email: bad
+        name: Jane
+        password: password123
+    throws: invalid_body

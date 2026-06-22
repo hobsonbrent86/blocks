@@ -1,0 +1,17 @@
+{
+  "name": "blocks-monorepo",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "pnpm -r run build",
+    "test": "pnpm -r run test",
+    "verify": "node packages/cli/dist/index.js verify --path examples/signup",
+    "verify:signup": "node packages/cli/dist/index.js verify --path examples/signup --format github",
+    "test:signup": "node packages/cli/dist/index.js test --path examples/signup",
+    "ci": "pnpm build && pnpm test && pnpm verify && pnpm test:signup"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "packageManager": "pnpm@9.15.0"
+}
