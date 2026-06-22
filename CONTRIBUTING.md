@@ -5,6 +5,8 @@ Thanks for helping build Block Vibe Coding.
 ## Development setup
 
 ```bash
+git clone https://github.com/hobsonbrent86/blocks.git
+cd blocks
 npx pnpm@9.15.0 install
 npx pnpm@9.15.0 -r run build
 npx pnpm@9.15.0 run ci
@@ -13,7 +15,8 @@ npx pnpm@9.15.0 run ci
 Link CLI globally for local testing:
 
 ```bash
-cd packages/cli && npm link
+./scripts/link-cli.sh
+# or: cd packages/cli && npm link
 ```
 
 ## Project layout
@@ -23,19 +26,25 @@ cd packages/cli && npm link
 | `packages/verify` | Verification engine |
 | `packages/cli` | `blocks` CLI + bundled assets |
 | `packages/mcp` | MCP server |
-| `packages/inspect` | Inspector UI |
+| `packages/inspect` | Inspector + Studio UI |
 | `packages/schemas` | JSON Schema |
-| `integrations/cursor` | Rules + skills source |
+| `integrations/cursor` | Cursor rules + skills source |
+| `integrations/claude` | CLAUDE.md template for Claude Code |
 | `integrations/github-action` | CI composite action |
 | `templates/init` | `blocks init` template |
 | `examples/signup` | Reference feature |
 
 ## Adding a verify check
 
-1. Add check ID to `docs/oss-build-plan.md`
-2. Implement in `packages/verify/src/checks.ts`
-3. Add fixture case in `packages/verify/fixtures/` if needed
-4. Update tests
+1. Implement in `packages/verify/src/checks.ts`
+2. Add tests in `packages/verify/src/verify.test.ts`
+3. Update [ontology](docs/spec/ontology-v0.1.md) if definitions change
+
+## Changing agent integrations
+
+- **Cursor:** edit `integrations/cursor/` — rules (`.mdc`) and skills (`SKILL.md`)
+- **Claude:** edit `integrations/claude/CLAUDE.md`; skills are shared from `integrations/cursor/skills/`
+- Rebuild CLI (`pnpm -r run build`) so `copy-assets.mjs` refreshes bundled assets
 
 ## Changing the spec
 

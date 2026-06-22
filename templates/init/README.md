@@ -10,4 +10,4 @@ blocks test --block validate.my_payload
 blocks inspect --block validate.my_payload
 ```
 
-See https://github.com/blocks-dev/blocks/blob/main/docs/quickstart.md
+See https://github.com/hobsonbrent86/blocks/blob/main/docs/quickstart.md

@@ -205,7 +205,7 @@ const claude = program.command("claude").description("Claude Code integration");
 
 claude
   .command("install")
-  .description("Install CLAUDE.md, guides, and .mcp.json for Claude Code")
+  .description("Install CLAUDE.md, skills, and .mcp.json for Claude Code")
   .option("-p, --path <path>", "Repository root", process.cwd())
   .action(claudeInstallCommand);
 

@@ -35,10 +35,19 @@ Exit code `1` on failure.
 ## Test
 
 ```bash
-blocks test [--path .] [--block <id>] [--fixture <path>] [--format human|json] [--verbose]
+blocks test [--path .] [--block <id>] [--graph <id>] [--fixture <path>] [--format human|json] [--verbose]
 ```
 
-Fixtures: `blocks/<species>/<name>/fixtures/test.yaml`
+Fixtures: `blocks/<species>/<name>/fixtures/test.yaml`  
+Graph e2e: `.blocks/graphs/<graph-id>.e2e.yaml`
+
+## Progress
+
+```bash
+blocks progress --graph <id> [--path .] [--format human|json] [--no-test]
+```
+
+Shows Working / built counts, finalize queue, and `next_block`.
 
 ## Inspector
 

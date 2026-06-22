@@ -12,7 +12,7 @@ Get from zero to a working block in ~15 minutes.
 ### Option A — From this repo (for testing now)
 
 ```bash
-git clone https://github.com/blocks-dev/blocks blocks
+git clone https://github.com/hobsonbrent86/blocks blocks
 cd blocks
 npx pnpm@9.15.0 install
 npx pnpm@9.15.0 -r run build
@@ -119,4 +119,4 @@ blocks inspect --block validate.signup_payload --path .
 - [Cursor setup](./cursor-setup.md)
 - [Claude setup](./claude-setup.md)
 - [FAQ](./faq.md)
-- [Creed](../spec/creed-v0.1.md)
+- [Creed](./spec/creed-v0.1.md)

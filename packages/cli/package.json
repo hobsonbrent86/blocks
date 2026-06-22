@@ -6,10 +6,10 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/blocks-dev/blocks.git",
+    "url": "https://github.com/hobsonbrent86/blocks.git",
     "directory": "packages/cli"
   },
-  "keywords": ["blocks", "vibe-coding", "cursor", "ai", "architecture"],
+  "keywords": ["blocks", "vibe-coding", "cursor", "claude", "ai", "architecture"],
   "bin": {
     "blocks": "./dist/index.js"
   },

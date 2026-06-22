@@ -24,6 +24,7 @@ This copies:
 
 | Skill | Say something like… |
 |-------|---------------------|
+| `block-next` | "What block should I build next?" |
 | `block-new` | "Create a new validate block" |
 | `block-contract` | "Define the contract for this block" |
 | `block-wire` | "Wire validate to persist in the graph" |
